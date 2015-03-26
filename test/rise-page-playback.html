@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Page - Playback</title>
+
+  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../rise-page.html">
+  <link rel="import" href="rise-demo.html">
+</head>
+<body>
+  <rise-page id="page">
+    <rise-demo id="demo"></rise-demo>
+  </rise-page>
+
+  <script>
+    suite("playback", function() {
+      var page = document.getElementById("page"),
+        demo = document.getElementById("demo"),
+        playSpy, pauseSpy, stopSpy;
+
+      suiteSetup(function() {
+        demo.onReady();
+
+        playSpy = sinon.spy(page.components[0], "play");
+        pauseSpy = sinon.spy(page.components[0], "pause");
+        stopSpy = sinon.spy(page.components[0], "stop");
+      });
+
+      suiteTeardown(function() {
+        page.components[0].play.restore();
+        page.components[0].pause.restore();
+        page.components[0].stop.restore();
+      });
+
+      test("rise-page play function", function() {
+        page.play();
+
+        assert(playSpy.calledOnce);
+      });
+
+      test("rise-page pause function", function() {
+        page.pause();
+
+        assert(pauseSpy.calledOnce);
+      });
+
+      test("rise-page stop function", function() {
+        page.stop();
+
+        assert(stopSpy.calledOnce);
+      });
+    });
+  </script>
+</body>
+</html>

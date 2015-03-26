@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>Page - Display Info</title>
+
+  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <link rel="import" href="../rise-page.html">
+</head>
+<body>
+  <rise-page id="page"></rise-page>
+
+  <script>
+    suite("display info", function() {
+      var page = document.getElementById("page"),
+        demo = document.getElementById("demo"),
+        displayId = "dummyDisplay",
+        resp = {
+        "item": {
+          "companyId": "abc123",
+          "displayAddress": {
+            "street": "PO Box 77240",
+            "unit": "RPO Courtney Park",
+            "city": "Mississauga",
+            "province": "ON",
+            "country": "CA",
+            "postalCode": "L5T2P4"
+          },
+          "tags": [{
+            "name": "image",
+            "type": "LOOKUP",
+            "value": "book"
+          }]
+        }
+      };
+
+      suiteSetup(function() {
+        history.pushState({}, "", "?displayId=" + displayId);
+        page.displayInfo = resp.item;
+      });
+
+      test("Display ID", function() {
+        assert.equal(page.getDisplayId(), displayId);
+      });
+
+      test("Company ID", function() {
+        assert.equal(page.getCompanyId(), "abc123");
+      });
+
+      test("Display address", function() {
+        assert.equal(JSON.stringify(page.getDisplayAddress()),
+          JSON.stringify({ street: "PO Box 77240", unit: "RPO Courtney Park", city: "Mississauga", province: "ON", country: "CA", postalCode: "L5T2P4" }));
+      });
+
+      test("Display tags", function() {
+        assert.equal(JSON.stringify(page.getDisplayTags()),
+            JSON.stringify([{ name: "image", type: "LOOKUP", value: "book" }]));
+      });
+    });
+  </script>
+</body>
+</html>
