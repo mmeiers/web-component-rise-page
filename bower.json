@@ -1,0 +1,28 @@
+{
+  "name": "rise-page",
+  "version": "1.0.0",
+  "authors": [
+    "Donna Peplinskie <donna.peplinskie@risevision.com>"
+  ],
+  "description": "Rise Page Web Component",
+  "main": "rise-page.html",
+  "keywords": [
+    "polymer",
+    "web-components"
+  ],
+  "license": "GPLv3",
+  "homepage": "https://github.com/Rise-Vision/web-component-rise-page",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "test"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.5.5",
+    "widget-common": "https://github.com/Rise-Vision/widget-common.git#0.1.7"
+  },
+  "devDependencies": {
+    "web-component-tester": "~2.2.5"
+  }
+}
