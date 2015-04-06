@@ -38,7 +38,7 @@
       };
 
       suiteSetup(function() {
-        history.pushState({}, "", "?displayId=" + displayId);
+        history.pushState({}, "", "?id=" + displayId);
         page.displayInfo = resp.item;
       });
 
