@@ -19,6 +19,7 @@
     "test"
   ],
   "dependencies": {
+    "core-ajax": "Polymer/core-ajax#~0.5.5",
     "polymer": "Polymer/polymer#~0.5.5",
     "widget-common": "https://github.com/Rise-Vision/widget-common.git#0.1.7"
   },
