@@ -2,7 +2,7 @@
 
 <polymer-element name="rise-demo">
 <script>
-    /* global Polymer, _ */
+    /* global Polymer */
     /*jshint newcap: false */
     Polymer("rise-demo", {
       onReady: function() {
@@ -20,15 +20,15 @@
       },
 
       play: function() {
-        console.log("play");
+        this.dispatchEvent(new CustomEvent("rise-demo-play", { "bubbles": true }));
       },
 
       pause: function() {
-        console.log("pause");
+        this.dispatchEvent(new CustomEvent("rise-demo-pause", { "bubbles": true }));
       },
 
       stop: function() {
-        console.log("stop");
+        this.dispatchEvent(new CustomEvent("rise-demo-stop", { "bubbles": true }));
       },
 
       sendDone: function() {
