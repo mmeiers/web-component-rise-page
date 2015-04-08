@@ -1,35 +1,68 @@
 # Rise Page Web Component
 
 ## Introduction
+The Rise Page Web Component controls the playback of its child components, telling them when to play, pause or stop. Additionally, it surfaces methods for returning details about the Display.
+
+Rise Page Web Component works in conjunction with [Rise Vision](http://www.risevision.com), the [digital signage management application](http://rva.risevision.com/) that runs on [Google Cloud](https://cloud.google.com).
+
+At this time Chrome is the only browser that this project and Rise Vision supports.
 
 ## Usage
-To use the Rise Page Web Component, you should first install `webcomponents.js`. The `webcomponents.js` polyfills enable Web Components in (evergreen) browsers that lack native support.
-
-To install with Bower:
-```
-bower install webcomponentsjs
-```
-
-To install with npm:
-```
-npm install webcomponents.js
-```
-
-Next, install the Rise Page Web Component with Bower:
+To use the Rise Page Web Component, you should first install the Rise Page Web Component with Bower:
 ```
 bower install https://github.com/Rise-Vision/web-component-rise-page.git
 ```
 
-Finally, construct your HTML page. You should include `webcomponents.js` before any code that touches the DOM, and load the Web Component using an HTML Import.
+Next, construct your HTML page. You should include `webcomponents.js` before any code that touches the DOM, and load the Web Component using an HTML Import. For example:
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="bower_components/webcomponentsjs/webcomponents.js"></script>
+    <link rel="import" href="bower_components/rise-page/rise-page.html">
+  </head>
+  <body>
+    <rise-page>
+      <!-- Child components go here. -->
+    </rise-page>
+  </body>
+</html>
+```
 
-### Events
-| Event                   | Description                        |
-| ----------------------- | -----------------------------------|
+*Note:* In order for the page component to be able to return information about a Display, the URL of the HTML page must include an `id` query parameter that contains the Display ID. You can find the Display ID on the Displays page of the [Rise Vision platform](http://rva.risevision.com/).
 
+### Child Components
+Child components can themselves be Web Components. Regardless of the form that they take, they need to adhere to some rules in order for the page component to be able to control their playback.
+
+Once a component has finished initializing and loading, it should dispatch the `rise-component-ready` event, passing custom data that includes the functions that the page component should call to control its playback, if applicable, and whether or not it supports sending the `rise-component-done` event. For example:
+```
+var readyEvent = new CustomEvent("rise-component-ready", {
+  "detail": {
+    "play": playFunction,
+    "pause": pauseFunction,
+    "stop": stopFunction,
+    "done": true
+  },
+  "bubbles": true
+});
+
+elem.dispatchEvent(readyEvent);
+```
+
+When a component that supports the `rise-component-done` event has completed a single playback cycle, it should dispatch that event. For example:
+```
+this.dispatchEvent(new CustomEvent("rise-component-done", { "bubbles": true }));
+```
+
+A sample child component that is built as a Web Component can be seen [here](https://github.com/Rise-Vision/web-component-rise-page/blob/master/rise-demo.html).
 
 ### Methods
-| Method | Description                                    |
-| ------ | ---------------------------------------------- |
+| Method              | Description                                                         |
+| ------------------- | ------------------------------------------------------------------- |
+| `getDisplayId`      | Returns the Display ID.                                             |
+| `getCompanyId`      | Returns the Company ID of the Display.                              |
+| `getDisplayAddress` | Returns the Display address.                                        |
+| `getDisplayTags`    | Returns the lookup tags associated with the Display, if applicable. |
 
 ## Built With
 - [Polymer](https://www.polymer-project.org/)
@@ -69,7 +102,7 @@ You can access the `demo.html` file via a local web server. On Mac, execute the 
 python -m SimpleHTTPServer
 ```
 
-This starts a web server on port 8000, and you can access the Rise Page Web Component by navigating to `localhost:8000/demo.html`.
+This starts a web server on port 8000, and you can access the Rise Page Web Component by navigating to `localhost:8000/demo.html?id=<your Display Id>`.
 
 ### Testing
 You can run the suite of tests via a local web server. On Mac, execute the following command from the root directory of the Web Component:
