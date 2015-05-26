@@ -28,12 +28,7 @@
             "province": "ON",
             "country": "CA",
             "postalCode": "L5T2P4"
-          },
-          "tags": [{
-            "name": "image",
-            "type": "LOOKUP",
-            "value": "book"
-          }]
+          }
         }
       };
 
@@ -53,11 +48,6 @@
       test("Display address", function() {
         assert.equal(JSON.stringify(page.getDisplayAddress()),
           JSON.stringify({ street: "PO Box 77240", unit: "RPO Courtney Park", city: "Mississauga", province: "ON", country: "CA", postalCode: "L5T2P4" }));
-      });
-
-      test("Display tags", function() {
-        assert.equal(JSON.stringify(page.getDisplayTags()),
-            JSON.stringify([{ name: "image", type: "LOOKUP", value: "book" }]));
       });
     });
   </script>
