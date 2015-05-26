@@ -47,15 +47,6 @@
       displayAddress: null,
 
       /**
-       * The tags associated with the Display.
-       *
-       * @property tags
-       * @type object
-       * @default null
-       */
-      tags: null,
-
-      /**
        * The child components that have reported as being ready.
        *
        * @property components
@@ -297,18 +288,6 @@
         }
         else {
           return {};
-        }
-      },
-
-      /**
-       * Get the tags associated with a Display.
-       */
-      getDisplayTags: function() {
-        if (this.displayInfo && this.displayInfo.tags) {
-          return this.displayInfo.tags;
-        }
-        else {
-          return [];
         }
       },
 

@@ -62,7 +62,6 @@ A sample child component that is built as a Web Component can be seen [here](htt
 | `getDisplayId`      | Returns the Display ID.                                             |
 | `getCompanyId`      | Returns the Company ID of the Display.                              |
 | `getDisplayAddress` | Returns the Display address.                                        |
-| `getDisplayTags`    | Returns the lookup tags associated with the Display, if applicable. |
 
 ## Built With
 - [Polymer](https://www.polymer-project.org/)

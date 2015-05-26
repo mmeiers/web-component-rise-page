@@ -23,7 +23,6 @@
     <button id="displayId" type="button" disabled>Display ID</button>
     <button id="companyId" type="button" disabled>Company ID</button>
     <button id="displayAddress" type="button" disabled>Display Address</button>
-    <button id="displayTags" type="button" disabled>Display Tags</button>
   </form>
 
   <div id="messages"></div>
@@ -39,8 +38,7 @@
       doneBtn = document.getElementById("done"),
       displayIdBtn = document.getElementById("displayId"),
       companyIdBtn = document.getElementById("companyId"),
-      displayAddressBtn = document.getElementById("displayAddress"),
-      displayTagsBtn = document.getElementById("displayTags");
+      displayAddressBtn = document.getElementById("displayAddress");
 
     function enable(elem) {
       elem.removeAttribute("disabled");
@@ -60,7 +58,6 @@
       enable(displayIdBtn);
       enable(companyIdBtn);
       enable(displayAddressBtn);
-      enable(displayTagsBtn);
     }
 
     function play() {
@@ -132,16 +129,6 @@
 
     }
 
-    function getDisplayTags() {
-      var tags = page.getDisplayTags();
-
-      for (var i = 0; i < tags.length; i++) {
-        messages.innerHTML += "Type: " + (tags[i].type ? tags[i].type : "") + "<br>" +
-          "Name: " + (tags[i].name ? tags[i].name : "") + "<br>" +
-          "Value: " + (tags[i].value ? tags[i].value : "") + "<br><br>";
-      }
-    }
-
     function init() {
       readyBtn.onclick = ready;
       playBtn.onclick = play;
@@ -151,7 +138,6 @@
       displayIdBtn.onclick = getDisplayId;
       companyIdBtn.onclick = getCompanyId;
       displayAddressBtn.onclick = getDisplayAddress;
-      displayTagsBtn.onclick = getDisplayTags;
 
       this.addEventListener("rise-demo-play", handlePlay);
       this.addEventListener("rise-demo-pause", handlePause);
