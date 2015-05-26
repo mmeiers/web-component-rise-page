@@ -11,13 +11,12 @@
   <link rel="import" href="../rise-page.html">
 </head>
 <body>
-  <rise-page id="page"></rise-page>
+  <rise-page id="page" displayId="dummy-id"></rise-page>
 
   <script>
     suite("display info", function() {
       var page = document.getElementById("page"),
         demo = document.getElementById("demo"),
-        displayId = "dummyDisplay",
         resp = {
         "item": {
           "companyId": "abc123",
@@ -33,12 +32,11 @@
       };
 
       suiteSetup(function() {
-        history.pushState({}, "", "?id=" + displayId);
         page.displayInfo = resp.item;
       });
 
       test("Display ID", function() {
-        assert.equal(page.getDisplayId(), displayId);
+        assert.equal(page.getDisplayId(), "dummy-id");
       });
 
       test("Company ID", function() {

@@ -29,7 +29,12 @@ Next, construct your HTML page. You should include `webcomponents.js` before any
 </html>
 ```
 
-*Note:* In order for the page component to be able to return information about a Display, the URL of the HTML page must include an `id` query parameter that contains the Display ID. You can find the Display ID on the Displays page of the [Rise Vision platform](http://rva.risevision.com/).
+### Attributes
+| Attribute              | Type                              | Default |
+| ---------------------- | --------------------------------- | :-----: |
+| `displayId` (required) | `<string>` The ID of the Display. | `''`    |
+
+*Note:* You can find the Display ID on the Displays page of the [Rise Vision platform](http://rva.risevision.com/).
 
 ### Child Components
 Child components can themselves be Web Components. Regardless of the form that they take, they need to adhere to some rules in order for the page component to be able to control their playback.
