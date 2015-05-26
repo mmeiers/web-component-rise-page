@@ -1,9 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-ajax/core-ajax.html">
 
-<script src="../widget-common/dist/common.min.js"></script>
-
-<polymer-element name="rise-page">
+<polymer-element name="rise-page" attributes="displayId">
   <template>
     <content id="content"></content>
 
@@ -16,13 +14,13 @@
   </template>
 
   <script>
-    /* global Polymer, RiseVision */
+    /* global Polymer */
     /*jshint newcap: false */
     Polymer("rise-page", {
       /**
        * The ID of the Display.
        *
-       * @property displayId
+       * @attribute displayId
        * @type string
        * @default ""
        */
@@ -260,10 +258,6 @@
        * Return the Display ID.
        */
       getDisplayId: function() {
-        if (this.displayId === "") {
-          this.displayId = RiseVision.Common.Utilities.getQueryParameter("id");
-        }
-
         return this.displayId;
       },
 
