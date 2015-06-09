@@ -1,312 +1,246 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../core-ajax/core-ajax.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
 
-<polymer-element name="rise-page" attributes="displayId">
+<dom-module id="rise-page">
   <template>
     <content id="content"></content>
 
-    <core-ajax id="display"
-      url="{{displayUrl}}"
-      handleAs="json"
-      on-core-response="{{handleDisplayResponse}}"
-      on-core-error="{{handleDisplayError}}">
-    </core-ajax>
+    <iron-ajax id="display"
+      url={{_computeUrl(displayId)}}
+      handle-as="json"
+      on-response="_handleResponse"
+      verbose="true">
+    </iron-ajax>
   </template>
+</dom-module>
 
-  <script>
-    /* global Polymer */
-    /*jshint newcap: false */
-    Polymer("rise-page", {
+<script>
+  /* global Polymer */
+  /*jshint newcap: false */
+  Polymer({
+    is: "rise-page",
+
+    properties: {
       /**
        * The ID of the Display.
-       *
-       * @attribute displayId
-       * @type string
-       * @default ""
        */
-      displayId: "",
+      displayId: {
+        type: String,
+        value: ""
+      }
+    },
 
-      /**
-       * The ID of the Company.
-       *
-       * @property companyId
-       * @type string
-       * @default ""
-       */
-      companyId: "",
+    /**
+     * The child components that have reported as being ready.
+     */
+    _components: [],
 
-      /**
-       * The address of the Display.
-       *
-       * @property displayAddress
-       * @type object
-       * @default null
-       */
-      displayAddress: null,
+    /**
+     * The total number of child components.
+     */
+    _totalComponents: 0,
 
-      /**
-       * The child components that have reported as being ready.
-       *
-       * @property components
-       * @type object
-       * @default []
-       */
-      components: [],
+    /**
+     * The number of child components that have reported as being ready.
+     */
+    _numComponents: 0,
 
-      /**
-       * The total number of child components.
-       *
-       * @property totalComponents
-       * @type number
-       * @default 0
-       */
-      totalComponents: 0,
+    /**
+     * Object containing information about the Display.
+     */
+    _displayInfo: null,
 
-      /**
-       * The number of child components that have reported as being ready.
-       *
-       * @property numComponents
-       * @type number
-       * @default 0
-       */
-      numComponents: 0,
+    /**
+     * The delay (in ms) for the timeout that fires if not all components have reported ready.
+     */
+    _loadingDelay: 30000,
 
-      /**
-       * The ID of the timeout that fires if not all components have reported ready after
-       * a specified delay.
-       *
-       * @property loadingTimeout
-       * @type number
-       * @default 0
-       */
-      loadingTimeout: 0,
+    /**
+     * The delay (in ms) for the timeout that fires to refresh the Display info.
+     */
+    _displayDelay: 900000,
 
-      /**
-       * The delay (in ms) for the timeout that fires if not all components have reported ready.
-       *
-       * @property loadingDelay
-       * @type number
-       * @default 30000
-       */
-      loadingDelay: 30000,
+    /************************************** INITIALIZATION **************************************/
 
-      /**
-       * The base URL for the Display request.
-       *
-       * @property displayUrl
-       * @type string
-       * @default ""
-       */
-      displayUrl: "https://rvacore-test.appspot.com/_ah/api/content/v0/display?id=",
+    /**
+     * Construct the base URL for the Display request.
+     */
+    _computeUrl: function(displayId) {
+      return "https://rvaserver2.appspot.com/_ah/api/content/v0/display?id=" + displayId;
+    },
 
-      /**
-       * Object containing information about the Display.
-       *
-       * @property displayInfo
-       * @type object
-       * @default null
-       */
-      displayInfo: null,
+    /**
+     * An instance of the element was inserted into the DOM.
+     */
+    attached: function() {
+      var nodes = Polymer.dom(this.$.content).getDistributedNodes();
 
-      /**
-       * The ID of the timeout that fires to refresh the Display info.
-       *
-       * @property displayTimeout
-       * @type number
-       * @default 0
-       */
-      displayTimeout: 0,
-
-      /**
-       * The delay (in ms) for the timeout that fires to refresh the Display info.
-       *
-       * @property displayDelay
-       * @type number
-       * @default 900000
-       */
-      displayDelay: 900000,
-
-      /************************************** INITIALIZATION **************************************/
-
-      /**
-       * An instance of the element was inserted into the DOM.
-       */
-      attached: function() {
-        var self = this,
-          nodes = this.$.content.getDistributedNodes();
-
-        for (var i = 0; i < nodes.length; i++) {
-          if (nodes[i].nodeType === 1) {
-            this.totalComponents++;
-          }
-        }
-
-        this.addEventListener("rise-component-ready", this.handleReady);
-        this.addEventListener("rise-component-done", this.handleDone);
-
-        this.loadingTimeout = setTimeout(function() {
-          self.start();
-        }, this.loadingDelay);
-
-        this.getDisplayInfo();
-      },
-
-      /**
-       * Start playing the child components.
-       */
-      start: function() {
-        // Remove the event listener so that it won't be triggered by late-loading components.
-        this.removeEventListener("rise-component-ready", this.handleReady);
-        this.play();
-      },
-
-      /***************************************** PLAYBACK *****************************************/
-
-      /**
-       * Add the component to the components object if it does not already exist.
-       */
-      handleReady: function(e) {
-        var component;
-
-        for (var i = 0; i < this.components.length; i++) {
-          if (this.components[i].element === e.target) {
-            return;
-          }
-        }
-
-        component = {};
-        component.element = e.target;
-
-        if (e.detail) {
-          if (e.detail.play) {
-            component.play = e.detail.play;
-          }
-
-          if (e.detail.pause) {
-            component.pause = e.detail.pause;
-          }
-
-          if (e.detail.stop) {
-            component.stop = e.detail.stop;
-          }
-
-          if (e.detail.done) {
-            component.done = e.detail.done;
-          }
-        }
-
-        this.components.push(component);
-        this.numComponents++;
-
-        if (this.numComponents === this.totalComponents) {
-          clearTimeout(this.loadingTimeout);
-          this.removeEventListener("rise-component-ready", this.handleReady);
-          this.play();
-        }
-      },
-
-      /**
-       * Play a component again once it has finished.
-       */
-      handleDone: function(e) {
-        for (var i = 0; i < this.components.length; i++) {
-          if (this.components[i].element === e.target) {
-            if (this.components[i].hasOwnProperty("play")) {
-              this.components[i].play.call(this.components[i].element);
-            }
-
-            break;
-          }
-        }
-      },
-
-      /**
-       * Send a command to all components.
-       */
-      sendCommand: function(command) {
-        for (var i = 0; i < this.components.length; i++) {
-          if (this.components[i].hasOwnProperty(command)) {
-            this.components[i][command].call(this.components[i].element);
-          }
-        }
-      },
-
-      /**
-       * Play all components.
-       */
-      play: function() {
-        this.sendCommand("play");
-      },
-
-      /**
-       * Pause all components.
-       */
-      pause: function() {
-        this.sendCommand("pause");
-      },
-
-      /**
-       * Stop all components.
-       */
-      stop: function() {
-        this.sendCommand("stop");
-      },
-
-      /*************************************** DISPLAY INFO ***************************************/
-
-      /**
-       * Return the Display ID.
-       */
-      getDisplayId: function() {
-        return this.displayId;
-      },
-
-      /**
-       * Return the Company ID of the Display.
-       */
-      getCompanyId: function() {
-        if (this.displayInfo && this.displayInfo.companyId) {
-          return this.displayInfo.companyId;
-        }
-        else {
-          return "";
-        }
-      },
-
-      /**
-       * Get the address of the Display.
-       */
-      getDisplayAddress: function() {
-        if (this.displayInfo && this.displayInfo.displayAddress) {
-          return this.displayInfo.displayAddress;
-        }
-        else {
-          return {};
-        }
-      },
-
-      /**
-       * Request information about a Display from the Content API.
-       */
-      getDisplayInfo: function() {
-        this.displayUrl = this.displayUrl + this.getDisplayId();
-        this.$.display.go();
-
-        clearTimeout(this.displayTimeout);
-
-        this.displayTimeout = setTimeout(function() {
-          this.getDisplayInfo();
-        }, this.displayDelay);
-      },
-
-      /**
-       * Fires when a response is received from the Content API.
-       */
-      handleDisplayResponse: function(e, resp) {
-        if (resp && resp.response && resp.response.item) {
-          this.displayInfo = resp.response.item;
+      for (var i = 0; i < nodes.length; i++) {
+        if (nodes[i].nodeType === 1) {
+          this._totalComponents++;
         }
       }
-    });
-  </script>
-</polymer-element>
+
+      this.addEventListener("rise-component-ready", this._handleReady);
+      this.addEventListener("rise-component-done", this._handleDone);
+
+      this.debounce("start", function() {
+        this._start();
+      }, this._loadingDelay);
+
+      this._getDisplayInfo();
+    },
+
+    /**
+     * Start playing the child components.
+     */
+    _start: function() {
+      this.removeEventListener("rise-component-ready", this._handleReady);
+      this.play();
+    },
+
+    /***************************************** PLAYBACK *****************************************/
+
+    /**
+     * Add the component to the components object if it does not already exist.
+     */
+    _handleReady: function(e) {
+      var component;
+
+      for (var i = 0; i < this._components.length; i++) {
+        if (this._components[i].element === e.target) {
+          return;
+        }
+      }
+
+      component = {};
+      component.element = e.target;
+
+      if (e.detail) {
+        if (e.detail.play) {
+          component.play = e.detail.play;
+        }
+
+        if (e.detail.pause) {
+          component.pause = e.detail.pause;
+        }
+
+        if (e.detail.stop) {
+          component.stop = e.detail.stop;
+        }
+
+        if (e.detail.done) {
+          component.done = e.detail.done;
+        }
+      }
+
+      this._components.push(component);
+      this._numComponents++;
+
+      if (this._numComponents === this._totalComponents) {
+        this._start();
+        this.cancelDebouncer("start");
+      }
+    },
+
+    /**
+     * Play a component again once it has finished.
+     */
+    _handleDone: function(e) {
+      for (var i = 0; i < this._components.length; i++) {
+        if (this._components[i].element === e.target) {
+          if (this._components[i].hasOwnProperty("play")) {
+            this._components[i].play.call(this._components[i].element);
+          }
+
+          break;
+        }
+      }
+    },
+
+    /**
+     * Send a command to all components.
+     */
+    _sendCommand: function(command) {
+      for (var i = 0; i < this._components.length; i++) {
+        if (this._components[i].hasOwnProperty(command)) {
+          this._components[i][command].call(this._components[i].element);
+        }
+      }
+    },
+
+    /**
+     * Play all components.
+     */
+    play: function() {
+      this._sendCommand("play");
+    },
+
+    /**
+     * Pause all components.
+     */
+    pause: function() {
+      this._sendCommand("pause");
+    },
+
+    /**
+     * Stop all components.
+     */
+    stop: function() {
+      this._sendCommand("stop");
+    },
+
+    /*************************************** DISPLAY INFO ***************************************/
+
+    /**
+     * Return the Display ID.
+     */
+    getDisplayId: function() {
+      return this.displayId;
+    },
+
+    /**
+     * Return the Company ID of the Display.
+     */
+    getCompanyId: function() {
+      if (this._displayInfo && this._displayInfo.companyId) {
+        return this._displayInfo.companyId;
+      }
+      else {
+        return "";
+      }
+    },
+
+    /**
+     * Get the address of the Display.
+     */
+    getDisplayAddress: function() {
+      if (this._displayInfo && this._displayInfo.displayAddress) {
+        return this._displayInfo.displayAddress;
+      }
+      else {
+        return {};
+      }
+    },
+
+    /**
+     * Request information about a Display from the Content API.
+     */
+    _getDisplayInfo: function() {
+      this.$.display.generateRequest();
+
+      this.debounce("display-info", function() {
+        this._getDisplayInfo();
+      }, this._displayDelay);
+    },
+
+    /**
+     * Fires when a response is received from the Content API.
+     */
+    _handleResponse: function(e, resp) {
+      if (resp && resp.response && resp.response.item) {
+        this._displayInfo = resp.response.item;
+      }
+    }
+  });
+</script>

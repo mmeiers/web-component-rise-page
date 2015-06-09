@@ -5,26 +5,26 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>Page - Init</title>
 
-  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
 
   <link rel="import" href="../rise-page.html">
 </head>
 <body>
-  <rise-page id="none">
+  <rise-page id="none" display-id="dummy-id">
   </rise-page>
 
-  <rise-page id="single">
-    <my-component></my-component>
-  </rise-page>
-
-  <rise-page id="multiple">
-    <my-component></my-component>
-    <my-component></my-component>
+  <rise-page id="single" display-id="dummy-id">
     <my-component></my-component>
   </rise-page>
 
-  <rise-page id="nested">
+  <rise-page id="multiple" display-id="dummy-id">
+    <my-component></my-component>
+    <my-component></my-component>
+    <my-component></my-component>
+  </rise-page>
+
+  <rise-page id="nested" display-id="dummy-id">
     <my-component>
       <div>
         <p></p>
@@ -41,19 +41,19 @@
         nested = document.querySelector("#nested");
 
       test("no child elements", function() {
-        assert.equal(none.totalComponents, 0, "totalComponents");
+        assert.equal(none._totalComponents, 0, "totalComponents");
       });
 
       test("single child element", function() {
-        assert.equal(single.totalComponents, 1, "totalComponents");
+        assert.equal(single._totalComponents, 1, "totalComponents");
       });
 
       test("multiple child elements", function() {
-        assert.equal(multiple.totalComponents, 3, "totalComponents");
+        assert.equal(multiple._totalComponents, 3, "totalComponents");
       });
 
       test("nested child elements", function() {
-        assert.equal(nested.totalComponents, 1, "totalComponents");
+        assert.equal(nested._totalComponents, 1, "totalComponents");
       });
     });
   </script>
