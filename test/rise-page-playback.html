@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>Page - Playback</title>
 
-  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
 
   <link rel="import" href="../rise-page.html">
   <link rel="import" href="../rise-demo.html">
 </head>
 <body>
-  <rise-page id="page">
+  <rise-page id="page" display-id="dummy-id">
     <rise-demo id="demo"></rise-demo>
   </rise-page>
 
@@ -25,15 +25,15 @@
       suiteSetup(function() {
         demo.onReady();
 
-        playSpy = sinon.spy(page.components[0], "play");
-        pauseSpy = sinon.spy(page.components[0], "pause");
-        stopSpy = sinon.spy(page.components[0], "stop");
+        playSpy = sinon.spy(page._components[0], "play");
+        pauseSpy = sinon.spy(page._components[0], "pause");
+        stopSpy = sinon.spy(page._components[0], "stop");
       });
 
       suiteTeardown(function() {
-        page.components[0].play.restore();
-        page.components[0].pause.restore();
-        page.components[0].stop.restore();
+        page._components[0].play.restore();
+        page._components[0].pause.restore();
+        page._components[0].stop.restore();
       });
 
       test("rise-page play function", function() {

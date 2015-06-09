@@ -1,39 +1,42 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<polymer-element name="rise-demo">
+<dom-module name="rise-demo">
+</dom-module>
+
 <script>
-    /* global Polymer */
-    /*jshint newcap: false */
-    Polymer("rise-demo", {
-      onReady: function() {
-        var readyEvent = new CustomEvent("rise-component-ready", {
-          "detail": {
-            "play": this.play,
-            "pause": this.pause,
-            "stop": this.stop,
-            "done": true
-          },
-          "bubbles": true
-        });
+  /* global Polymer */
+  /*jshint newcap: false */
+   Polymer({
+    is: "rise-demo",
 
-        this.dispatchEvent(readyEvent);
-      },
+    onReady: function() {
+      var readyEvent = new CustomEvent("rise-component-ready", {
+        "detail": {
+          "play": this.play,
+          "pause": this.pause,
+          "stop": this.stop,
+          "done": true
+        },
+        "bubbles": true
+      });
 
-      play: function() {
-        this.dispatchEvent(new CustomEvent("rise-demo-play", { "bubbles": true }));
-      },
+      this.dispatchEvent(readyEvent);
+    },
 
-      pause: function() {
-        this.dispatchEvent(new CustomEvent("rise-demo-pause", { "bubbles": true }));
-      },
+    play: function() {
+      this.dispatchEvent(new CustomEvent("rise-demo-play", { "bubbles": true }));
+    },
 
-      stop: function() {
-        this.dispatchEvent(new CustomEvent("rise-demo-stop", { "bubbles": true }));
-      },
+    pause: function() {
+      this.dispatchEvent(new CustomEvent("rise-demo-pause", { "bubbles": true }));
+    },
 
-      sendDone: function() {
-        this.dispatchEvent(new CustomEvent("rise-component-done", { "bubbles": true }));
-      }
-    });
-  </script>
-</polymer-element>
+    stop: function() {
+      this.dispatchEvent(new CustomEvent("rise-demo-stop", { "bubbles": true }));
+    },
+
+    sendDone: function() {
+      this.dispatchEvent(new CustomEvent("rise-component-done", { "bubbles": true }));
+    }
+  });
+</script>

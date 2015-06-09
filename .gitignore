@@ -1,5 +1,2 @@
 node_modules/
-components/
-dist/
-temp/
-tools/
+bower_components/

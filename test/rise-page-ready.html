@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>Page - Ready</title>
 
-  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
+
   <script>
     // This needs to run before any timers are set.
     var clock = sinon.useFakeTimers();
@@ -16,12 +17,12 @@
   <link rel="import" href="../rise-demo.html">
 </head>
 <body>
-  <rise-page id="page">
+  <rise-page id="page" display-id="dummy-id">
     <rise-demo id="first"></rise-demo>
     <rise-demo id="second"></rise-demo>
   </rise-page>
 
-  <rise-page id="notReadyPage">
+  <rise-page id="notReadyPage" display-id="dummy-id">
     <rise-demo id="notReady"></rise-demo>
   </rise-page>
 
@@ -40,57 +41,57 @@
 
       suiteTeardown(function() {
         clock.restore();
-        page.components[0].play.restore();
+        page._components[0].play.restore();
       });
 
-      test("number of elements in components array", function() {
-        assert.equal(page.components.length, 1);
+      test("number of elements in _components array", function() {
+        assert.equal(page._components.length, 1);
       });
 
       test("first element's element property", function() {
-        assert.equal(page.components[0].element, first, "element");
+        assert.equal(page._components[0].element, first, "element");
       });
 
       test("first element's play property", function() {
-        assert.equal(page.components[0].play, first.play, "play");
+        assert.equal(page._components[0].play, first.play, "play");
       });
 
       test("first element's pause property", function() {
-        assert.equal(page.components[0].pause, first.pause, "pause");
+        assert.equal(page._components[0].pause, first.pause, "pause");
       });
 
       test("first element's stop property", function() {
-        assert.equal(page.components[0].stop, first.stop, "stop");
+        assert.equal(page._components[0].stop, first.stop, "stop");
       });
 
       test("first element's done property", function() {
-        assert.isTrue(page.components[0].done, "done");
+        assert.isTrue(page._components[0].done, "done");
       });
 
-      test("firing rise-component-ready on first element does not add it to the components array again", function() {
+      test("firing rise-component-ready on first element does not add it to the _components array again", function() {
         first.onReady();
 
-        assert.equal(page.components.length, 1);
+        assert.equal(page._components.length, 1);
       });
 
-      test("firing rise-component-ready on second element adds it to the components array", function() {
-        playSpy = sinon.spy(page.components[0], "play");
+      test("firing rise-component-ready on second element adds it to the _components array", function() {
+        playSpy = sinon.spy(page._components[0], "play");
 
         second.onReady();
 
-        assert.equal(page.components.length, 2);
+        assert.equal(page._components.length, 2);
         assert(playSpy.calledOnce);
       });
 
-      test("firing rise-component-ready on second element does not add it to the components array again", function() {
+      test("firing rise-component-ready on second element does not add it to the _components array again", function() {
         second.onReady();
 
-        assert.equal(page.components.length, 2);
+        assert.equal(page._components.length, 2);
       });
 
       test("timer does not fire when all child elements have called rise-component-ready", function() {
-        pageSpy = sinon.spy(page, "start");
-        notReadyPageSpy = sinon.spy(notReadyPage, "start");
+        pageSpy = sinon.spy(page, "_start");
+        notReadyPageSpy = sinon.spy(notReadyPage, "_start");
 
         clock.tick(30000);
 

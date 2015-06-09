@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>Page - Done</title>
 
-  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../webcomponentsjs/webcomponents-lite.min.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
 
   <link rel="import" href="../rise-page.html">
   <link rel="import" href="../rise-demo.html">
 </head>
 <body>
-  <rise-page id="page">
+  <rise-page id="page" display-id="dummy-id">
     <rise-demo id="demo"></rise-demo>
   </rise-page>
 
@@ -25,11 +25,11 @@
       suiteSetup(function() {
         demo.onReady();
 
-        demoSpy = sinon.spy(page.components[0], "play");
+        demoSpy = sinon.spy(page._components[0], "play");
       });
 
       suiteTeardown(function() {
-        page.components[0].play.restore();
+        page._components[0].play.restore();
       });
 
       test("handleDone", function() {
